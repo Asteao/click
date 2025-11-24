@@ -1,4 +1,11 @@
 const circle = document.getElementById('circle');
+
+// Set the title to the domain name or pathname
+const pageTitle = window.location.hostname || window.location.pathname;
+if (pageTitle) {
+    document.title = pageTitle;
+}
+
 const SHOW_LETTERS = true; // Toggle to enable/disable letters
 let isWhite = false; // Current state of the background (starts black)
 let previousLetter = null;
@@ -7,11 +14,8 @@ let currentLetter = null;
 let urlLetterIndex = 0;
 
 function getNextUrlLetter() {
-    const url = window.location.href;
-    // Remove protocol (e.g. http://, https://, file://)
-    const urlWithoutProtocol = url.replace(/^\w+:\/\//, '');
     // Extract only alphabetic characters
-    const letters = urlWithoutProtocol.replace(/[^a-zA-Z]/g, '');
+    const letters = pageTitle.replace(/[^a-zA-Z]/g, '');
 
     if (letters.length === 0) return '?'; // Fallback if no letters found
 
