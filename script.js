@@ -121,7 +121,25 @@ function triggerAnimation(e, letter) {
         circle.remove();
         activeCircles.delete(circleData);
     });
+
+    resetIdleTimer();
 }
+
+let idleTimer;
+function resetIdleTimer() {
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(() => {
+        triggerAnimation(null, getNextUrlLetter());
+    }, 3300);
+}
+
+window.addEventListener('blur', () => {
+    clearTimeout(idleTimer);
+});
+
+window.addEventListener('focus', () => {
+    resetIdleTimer();
+});
 
 // Collision Detection Loop
 function checkCollisions() {
