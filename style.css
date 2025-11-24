@@ -1,0 +1,34 @@
+body,
+html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    overflow: hidden;
+    /* Prevent scrollbars when circle grows */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.circle {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: white;
+    border-radius: 50%;
+    transform: scale(0);
+    transition: transform 0.5s ease-in;
+    pointer-events: none;
+    /* Let clicks pass through if needed, though we click body */
+}
+
+.circle.expand {
+    transform: scale(var(--target-scale));
+    /* Large enough to cover screen */
+}
+
+.no-transition {
+    transition: none !important;
+}
