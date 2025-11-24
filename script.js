@@ -7,7 +7,7 @@ if (pageTitle) {
 }
 
 const SHOW_LETTERS = true; // Toggle to enable/disable letters
-let isWhite = false; // Current state of the background (starts black)
+let isWhite = true; // Current state of the background (starts white)
 let previousLetter = null;
 let currentLetter = null;
 
