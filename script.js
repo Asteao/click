@@ -24,20 +24,23 @@ function getNextUrlLetter() {
     return char;
 }
 
-document.addEventListener('click', function (e) {
+function triggerAnimation(e, letter) {
     // If already animating, ignore click to prevent glitches
     if (circle.classList.contains('expand')) return;
 
-    // Position the circle at the click location
-    // Subtract half the width/height to center it
-    const x = e.clientX;
-    const y = e.clientY;
+    let x, y;
 
-    circle.style.left = `${x}px`;
-    circle.style.top = `${y}px`;
-    // We need to ensure transform-origin is center or just rely on top/left + transform
-    // The current CSS has transform: scale(0) -> scale(200). 
-    // Centering via top/left requires offsetting by radius.
+    if (e) {
+        // Position the circle at the click location
+        x = e.clientX;
+        y = e.clientY;
+    } else {
+        // Default to center of the screen
+        x = window.innerWidth / 2;
+        y = window.innerHeight / 2;
+    }
+
+    // Subtract half the width/height to center it
     // The CSS says width: 10px, height: 10px. So offset by 5px.
     circle.style.left = `${x - 5}px`;
     circle.style.top = `${y - 5}px`;
@@ -63,26 +66,31 @@ document.addEventListener('click', function (e) {
     // Promote the current letter to previous, so we can remove it later
     previousLetter = currentLetter;
 
-    if (SHOW_LETTERS) {
-        const letter = document.createElement('div');
-        letter.classList.add('letter');
-        letter.textContent = getNextUrlLetter();
-        letter.style.left = `${x}px`;
-        letter.style.top = `${y}px`;
+    if (letter) {
+        const letterEl = document.createElement('div');
+        letterEl.classList.add('letter');
+        letterEl.textContent = letter;
+        letterEl.style.left = `${x}px`;
+        letterEl.style.top = `${y}px`;
         // Letter color should be opposite of the circle color
         // Circle is (isWhite ? 'black' : 'white')
         // So Letter is (isWhite ? 'white' : 'black')
-        letter.style.color = isWhite ? 'white' : 'black';
+        letterEl.style.color = isWhite ? 'white' : 'black';
 
-        document.body.appendChild(letter);
-        currentLetter = letter;
+        document.body.appendChild(letterEl);
+        currentLetter = letterEl;
     } else {
         currentLetter = null;
     }
 
     // Start animation
     circle.classList.add('expand');
-});
+}
+
+document.addEventListener('click', (e) => triggerAnimation(e, getNextUrlLetter()));
+
+// Trigger animation once on load
+triggerAnimation();
 
 circle.addEventListener('transitionend', function () {
     // 1. Swap background color
