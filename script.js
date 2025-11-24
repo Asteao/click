@@ -17,7 +17,7 @@ let globalSequence = 0;
 
 function getNextUrlLetter() {
     // Extract only alphabetic characters
-    const letters = pageTitle.replace(/[^a-zA-Z]/g, '');
+    const letters = pageTitle.replace(/[^a-zA-Z.]/g, '');
 
     if (letters.length === 0) return '?'; // Fallback if no letters found
 
