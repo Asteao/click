@@ -26,7 +26,7 @@ function getNextUrlLetter() {
 
 function triggerAnimation(e, letter) {
     // If already animating, ignore click to prevent glitches
-    if (circle.classList.contains('expand')) return;
+    // if (circle.classList.contains('expand')) return; // Moved to event listener
 
     let x, y;
 
@@ -87,7 +87,10 @@ function triggerAnimation(e, letter) {
     circle.classList.add('expand');
 }
 
-document.addEventListener('click', (e) => triggerAnimation(e, getNextUrlLetter()));
+document.addEventListener('click', (e) => {
+    if (circle.classList.contains('expand')) return;
+    triggerAnimation(e, getNextUrlLetter());
+});
 
 // Trigger animation once on load
 triggerAnimation();
