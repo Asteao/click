@@ -22,6 +22,17 @@ html {
     transition: transform 0.5s ease-in;
     pointer-events: none;
     /* Let clicks pass through if needed, though we click body */
+    z-index: 10;
+}
+
+.letter {
+    position: absolute;
+    font-size: 20vmin;
+    font-weight: bold;
+    font-family: sans-serif;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 20;
 }
 
 .circle.expand {

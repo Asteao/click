@@ -1,5 +1,24 @@
 const circle = document.getElementById('circle');
+const SHOW_LETTERS = true; // Toggle to enable/disable letters
 let isWhite = false; // Current state of the background (starts black)
+let previousLetter = null;
+let currentLetter = null;
+
+let urlLetterIndex = 0;
+
+function getNextUrlLetter() {
+    const url = window.location.href;
+    // Remove protocol (e.g. http://, https://, file://)
+    const urlWithoutProtocol = url.replace(/^\w+:\/\//, '');
+    // Extract only alphabetic characters
+    const letters = urlWithoutProtocol.replace(/[^a-zA-Z]/g, '');
+
+    if (letters.length === 0) return '?'; // Fallback if no letters found
+
+    const char = letters.charAt(urlLetterIndex % letters.length);
+    urlLetterIndex++;
+    return char;
+}
 
 document.addEventListener('click', function (e) {
     // If already animating, ignore click to prevent glitches
@@ -36,6 +55,27 @@ document.addEventListener('click', function (e) {
     // If background is white (isWhite = true), circle should be black.
     circle.style.backgroundColor = isWhite ? 'black' : 'white';
 
+    // Create and position the letter
+    // Promote the current letter to previous, so we can remove it later
+    previousLetter = currentLetter;
+
+    if (SHOW_LETTERS) {
+        const letter = document.createElement('div');
+        letter.classList.add('letter');
+        letter.textContent = getNextUrlLetter();
+        letter.style.left = `${x}px`;
+        letter.style.top = `${y}px`;
+        // Letter color should be opposite of the circle color
+        // Circle is (isWhite ? 'black' : 'white')
+        // So Letter is (isWhite ? 'white' : 'black')
+        letter.style.color = isWhite ? 'white' : 'black';
+
+        document.body.appendChild(letter);
+        currentLetter = letter;
+    } else {
+        currentLetter = null;
+    }
+
     // Start animation
     circle.classList.add('expand');
 });
@@ -54,4 +94,10 @@ circle.addEventListener('transitionend', function () {
     circle.offsetHeight;
 
     circle.classList.remove('no-transition');
+
+    // 3. Remove the previous letter (from 2 clicks ago)
+    if (previousLetter) {
+        previousLetter.remove();
+        previousLetter = null;
+    }
 });
