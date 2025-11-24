@@ -15,9 +15,12 @@ const activeLetters = new Set();
 
 let globalSequence = 0;
 
+let lastX = null;
+let lastY = null;
+
 function getNextUrlLetter() {
     // Extract only alphabetic characters
-    const letters = pageTitle.replace(/[^a-zA-Z.]/g, '');
+    const letters = pageTitle.replace(/[^a-zA-Z.-]/g, '');
 
     if (letters.length === 0) return '?'; // Fallback if no letters found
 
@@ -40,10 +43,17 @@ function triggerAnimation(e, letter) {
         // Position the circle at the click location
         x = e.clientX;
         y = e.clientY;
+        lastX = x;
+        lastY = y;
     } else {
-        // Default to center of the screen
-        x = window.innerWidth / 2;
-        y = window.innerHeight / 2;
+        // Use previous position if available, otherwise default to center
+        if (lastX !== null && lastY !== null) {
+            x = lastX;
+            y = lastY;
+        } else {
+            x = window.innerWidth / 2;
+            y = window.innerHeight / 2;
+        }
     }
 
     // Subtract half the width/height to center it
@@ -195,3 +205,28 @@ document.addEventListener('click', (e) => {
 
 // Trigger animation once on load
 triggerAnimation();
+
+// Screen Wake Lock API
+let wakeLock = null;
+
+const requestWakeLock = async () => {
+    try {
+        wakeLock = await navigator.wakeLock.request('screen');
+        console.log('Wake Lock is active!');
+        wakeLock.addEventListener('release', () => {
+            console.log('Wake Lock has been released');
+        });
+    } catch (err) {
+        console.error(`${err.name}, ${err.message}`);
+    }
+};
+
+// Request a wake lock
+requestWakeLock();
+
+// Re-acquire the wake lock when the document becomes visible
+document.addEventListener('visibilitychange', async () => {
+    if (wakeLock !== null && document.visibilityState === 'visible') {
+        await requestWakeLock();
+    }
+});
