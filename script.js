@@ -1,5 +1,6 @@
 // Set the title to the domain name or pathname
-const pageTitle = window.location.hostname || window.location.pathname;
+const urlParams = new URLSearchParams(window.location.search);
+const pageTitle = urlParams.get('text') || window.location.hostname || window.location.pathname;
 if (pageTitle) {
     document.title = pageTitle;
 }
